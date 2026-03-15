@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TURKOO | Official Profile</title>
+    <link rel="icon" href="" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --accent-color: #888888;
+            --bg-dark: #050505;
+            --glass-bg: rgba(0, 0, 0, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow-color: rgba(255, 255, 255, 0.15);
+            
+            /* Couleurs officielles des réseaux */
+            --discord: #5865F2;
+            --twitch: #9146FF;
+            --youtube: #FF0000;
+            --tiktok: #000000;
+            
+            /* Couleurs des statuts Discord */
+            --status-online: #43b581;
+            --status-idle: #faa61a;
+            --status-dnd: #f04747;
+            --status-offline: #747f8d;
+            
+            /* URL de la bannière - CHANGEZ CETTE URL */
+            --banner-url: url('file:///C:/Users/baykaloglu%20efe/Downloads/t%C3%A9l%C3%A9chargement.jpg');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        /* --- Écran d'entrée --- */
+        #enter-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #enter-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        #enter-screen h1 {
+            font-size: clamp(1.8rem, 7vw, 4rem);
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            filter: drop-shadow(0 0 20px var(--glow-color));
+            padding: 0 20px;
+        }
+
+        .enter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 12px 30px;
+            font-size: 0.95rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.4s;
+            font-weight: 500;
+        }
+
+        .enter-btn:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 30px white;
+        }
+
+        /* --- Background Video --- */
+        .video-background {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            filter: grayscale(0.5) blur(1px);
+            transition: opacity 1s ease;
+        }
+
+        .video-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+            z-index: -1;
+        }
+
+        /* --- Container Principal --- */
+        .container {
+            width: 95%;
+            max-width: 405px;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            margin: 20px;
+            position: relative;
+        }
+
+        .container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Carte style Discord avec transparence SANS BLUR --- */
+        .discord-card {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.65); /* Noir semi-transparent sans blur */
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+        }
+
+        /* Effet de brillance subtile */
+        .discord-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* --- Bannière Discord --- */
+        .discord-banner {
+            width: 100%;
+            height: 135px;
+            background-image: var(--banner-url);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+        }
+
+        /* --- Section Profil --- */
+        .profile-section {
+            position: relative;
+            padding: 0 20px 20px;
+            margin-top: -36px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .profile-img-wrapper {
+            position: relative;
+            width: 81px;
+            height: 81px;
+            margin-bottom: 13.5px;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            background: rgba(30, 31, 34, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Status Discord Indicator */
+        .status-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .status-indicator.online {
+            background-color: var(--status-online);
+        }
+        .status-indicator.idle {
+            background-color: var(--status-idle);
+        }
+        .status-indicator.dnd {
+            background-color: var(--status-dnd);
+        }
+        .status-indicator.offline {
+            background-color: var(--status-offline);
+        }
+
+        .profile-decoration {
+            position: absolute;
+            top: -10.8px;
+            left: -10.8px;
+            width: 102.6px;
+            height: 102.6px;
+            background-image: url('https://i.imgur.com/L8cpGrE.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+            z-index: 3;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            opacity: 0.8;
+        }
+
+        /* Cadre rotatif */
+        .profile-img-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -5.4px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            animation: rotate 10s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Informations utilisateur */
+        .user-info {
+            width: 100%;
+            margin-top: 4.5px;
+        }
+
+        .name-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .name {
+            font-size: 1.62rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(to bottom, #fff, #ccc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .discord-tag {
+            font-size: 0.765rem;
+            color: #e0e0e0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3.6px 10.8px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7.2px;
+        }
+
+        .discord-tag i {
+            color: #5865F2;
+        }
+
+        /* Status Message */
+        .status-message {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .custom-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e0e0e0;
+            font-size: 0.85rem;
+        }
+
+        .custom-status i {
+            color: var(--status-online);
+            font-size: 0.9rem;
+        }
+
+        .activity {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .activity-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-icon i {
+            font-size: 1.2rem;
+            color: #5865F2;
+        }
+
+        .activity-text {
+            flex: 1;
+        }
+
+        .activity-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .activity-state {
+            font-size: 0.75rem;
+            color: #b5bac1;
+        }
+
+        .activity-timestamp {
+            font-size: 0.7rem;
+            color: #80848e;
+            margin-top: 2px;
+        }
+
+        .spotify-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .spotify-cover {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .spotify-info {
+            flex: 1;
+        }
+
+        .spotify-song {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1DB954;
+            margin-bottom: 2px;
+        }
+
+        .spotify-artist {
+            font-size: 0.75rem;
+            color: #b5bac1;
+        }
+
+        /* --- Player Audio --- */
+        .player {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 13.5px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin: 4.5px 0 13.5px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10.8px;
+            margin-bottom: 13.5px;
+        }
+
+        .track-cover {
+            width: 40.5px;
+            height: 40.5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-text h3 { 
+            font-size: 0.81rem;
+            margin-bottom: 1.8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .track-text p { 
+            font-size: 0.63rem;
+            color: #d0d0d0; 
+        }
+
+        .progress-area {
+            width: 100%;
+            height: 3.6px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 10.8px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #5865F2;
+            border-radius: 10px;
+            position: relative;
+            transition: width 0.1s linear;
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .btn-ctrl {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 0.99rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: 0.3s;
+            padding: 7.2px;
+            min-width: 39.6px;
+            min-height: 39.6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-ctrl:active { 
+            opacity: 1; 
+            transform: scale(0.95); 
+        }
+        .btn-play { 
+            font-size: 1.44rem;
+            opacity: 1; 
+            color: white;
+        }
+
+        /* --- Social Grid --- */
+        .social-section {
+            padding: 0 20px 20px;
+            background: transparent;
+        }
+
+        .social-title {
+            font-size: 0.675rem;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            color: #ccc;
+            margin-bottom: 13.5px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10.8px;
+            width: 100%;
+        }
+
+        .social-item {
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7.2px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            padding: 0 7.2px;
+            font-size: 0.765rem;
+            white-space: nowrap;
+        }
+
+        .social-item i {
+            font-size: 1.08rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-item span {
+            font-size: 0.675rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* Couleurs spécifiques au survol */
+        .social-item.discord:hover {
+            background: var(--discord);
+            border-color: var(--discord);
+        }
+
+        .social-item.twitch:hover {
+            background: var(--twitch);
+            border-color: var(--twitch);
+        }
+
+        .social-item.youtube:hover {
+            background: var(--youtube);
+            border-color: var(--youtube);
+        }
+
+        .social-item.tiktok:hover {
+            background: var(--tiktok);
+            border-color: var(--tiktok);
+        }
+
+        .social-item:hover i,
+        .social-item:hover span {
+            color: white;
+        }
+
+        .social-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .social-item:hover::before {
+            left: 100%;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            margin-top: 18px;
+            font-size: 0.585rem;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            opacity: 0.4;
+            text-align: center;
+            width: 100%;
+            padding: 0 18px;
+            color: white;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+                margin: 10px;
+            }
+            
+            .discord-banner {
+                height: 108px;
+            }
+            
+            .profile-section {
+                padding: 0 13.5px 13.5px;
+                margin-top: -31.5px;
+            }
+            
+            .profile-img-wrapper {
+                width: 72px;
+                height: 72px;
+            }
+            
+            .profile-decoration {
+                width: 93.6px;
+                height: 93.6px;
+                top: -10.8px;
+                left: -10.8px;
+            }
+            
+            .name {
+                font-size: 1.35rem;
+            }
+            
+            .social-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 7.2px;
+            }
+            
+            .social-item {
+                height: 40.5px;
+                padding: 0 3.6px;
+            }
+            
+            .social-item i {
+                font-size: 0.99rem;
+            }
+            
+            .social-item span {
+                font-size: 0.63rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .social-item span {
+                display: none;
+            }
+            
+            .social-item {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .social-item i {
+                font-size: 1.17rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="enter-screen">
+        <h1>TURKOO</h1>
+        <button class="enter-btn" id="enter-btn">Entrer</button>
+    </div>
+
+    <!-- Background Video -->
+    <div class="video-background">
+        <video id="bg-video" loop muted autoplay playsinline webkit-playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-overlay"></div>
+
+    <!-- Main Container -->
+    <div class="container" id="main-container">
+        
+        <!-- Carte style Discord sans blur -->
+        <div class="discord-card">
+            
+            <!-- Bannière Discord -->
+            <div class="discord-banner">
+                <div class="banner-overlay"></div>
+            </div>
+            
+            <!-- Section Profil avec Avatar et Status Discord -->
+            <div class="profile-section">
+                <div class="profile-img-wrapper">
+                    <img src="file:///C:/Users/baykaloglu%20efe/Downloads/7ca2b7c6f15eb8ae4097d5a55d950bbc.jpg" alt="TURKOO" class="profile-image">
+                    <div class="status-indicator offline" id="status-indicator"></div>
+                    <div class="profile-decoration"></div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="name-container">
+                        <div class="name">
+                            TURKOO
+                        </div>
+                    </div>
+                    <div class="discord-tag">
+                        <i class="fab fa-discord"></i>
+                        <span id="discord-username">turkoo26</span>
+                    </div>
+                    
+                    <!-- Status Message Section -->
+                    <div class="status-message" id="status-message">
+                        <div class="custom-status" id="custom-status">
+                            <i class="fas fa-circle"></i>
+                            <span id="status-text">Chargement du statut...</span>
+                        </div>
+                        <div class="activity" id="activity-container" style="display: none;">
+                            <!-- L'activité sera injectée ici par JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Player -->
+            <div style="padding: 0 20px;">
+                <div class="player">
+                    <div class="player-info">
+                        <img id="track-art" src="https://images.genius.com/cf44ff7e1fbed24aa99eabe9ac1dc799.500x500x1.jpg" class="track-cover">
+                        <div class="track-text">
+                            <h3 id="track-title">Loading...</h3>
+                            <p id="track-artist">Artist</p>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-area" id="progress-area">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    
+                    <div class="player-controls">
+                        <button class="btn-ctrl" id="prev-btn" aria-label="Previous track">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="btn-ctrl btn-play" id="play-btn" aria-label="Play/Pause">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="btn-ctrl" id="next-btn" aria-label="Next track">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Réseaux Sociaux -->
+            <div class="social-section">
+                <div class="social-title">CONNEXIONS</div>
+                <div class="social-grid">
+                    <a href="https://discord.gg/rsleak" target="_blank" class="social-item discord">
+                        <i class="fab fa-discord"></i>
+                        <span></span>
+                    </a>
+                    <a href="https://www.twitch.tv/turkooooooo" target="_blank" class="social-item twitch">
+                        <i class="fab fa-twitch"></i>
+                        <span></span>
+                    </a>
+                    <a href="https://www.youtube.com/@turkoooooo0" target="_blank" class="social-item youtube">
+                        <i class="fab fa-youtube"></i>
+                        <span></span>
+                    </a>
+                    <a href="https://www.tiktok.com/@.wturkoo" target="_blank" class="social-item tiktok">
+                        <i class="fab fa-tiktok"></i>
+                        <span></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 Developed by Turkoo
+        </div>
+    </div>
+
+    <script>
+        const enterBtn = document.getElementById('enter-btn');
+        const enterScreen = document.getElementById('enter-screen');
+        const container = document.getElementById('main-container');
+        const playBtn = document.getElementById('play-btn');
+        const progressArea = document.getElementById('progress-area');
+        const progressBar = document.getElementById('progress-bar');
+        const bgVideo = document.getElementById('bg-video');
+        
+        // Playlist audio
+        const playlist = [
+            {
+                title: "Sevran B | Maes",
+                artist: "Turkoo",
+                cover: "https://yt3.googleusercontent.com/3kGYRhyoa_2Glq46ztlqROi2G9fIBqQkMWo89PEWZj469Eqfz8CVVcCb-kyxIIfLWEV_GYE-8h0=s160-c-k-c0x00ffffff-no-rj",
+                src: "music.mp3"
+            },
+            {
+                title: "Caramelo - Ramos.",
+                artist: "Turkoo",
+                cover: "https://yt3.googleusercontent.com/NFxTAhJ7AJq8bF00mzweOrYjSBQ7sm2ef_z-MYpP4SaNv4GLgMWqCptwnpr0ycSLJF8YLD3Q7Fk=s160-c-k-c0x00ffffff-no-rj",
+                src: "music1.mp3"
+            }
+        ];
+
+        let trackIndex = 0;
+        let audio = new Audio();
+        audio.volume = 0.5;
+
+        // === CONFIGURATION DISCORD - VOTRE ID ===
+        const DISCORD_USER_ID = '1481750479749779588';
+
+        // Fonction pour récupérer le statut Discord via l'API REST
+        function fetchDiscordStatus() {
+            fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateDiscordStatus(data.data);
+                    } else {
+                        showOfflineStatus();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur de connexion à l\'API Discord:', error);
+                    showOfflineStatus();
+                });
+        }
+
+        // Fonction pour afficher le statut hors ligne
+        function showOfflineStatus() {
+            document.getElementById('status-indicator').className = 'status-indicator offline';
+            document.getElementById('status-text').textContent = 'Hors ligne';
+            document.getElementById('activity-container').style.display = 'none';
+        }
+
+        // Fonction pour mettre à jour l'affichage avec les données Discord
+        function updateDiscordStatus(presence) {
+            // Mettre à jour l'indicateur de statut
+            const statusIndicator = document.getElementById('status-indicator');
+            statusIndicator.className = 'status-indicator ' + presence.discord_status;
+            
+            // Mettre à jour le nom d'utilisateur
+            document.getElementById('discord-username').textContent = presence.discord_user.username;
+            
+            // Gérer le statut personnalisé
+            const customStatus = presence.activities.find(activity => activity.type === 4);
+            const statusText = document.getElementById('status-text');
+            
+            if (customStatus) {
+                statusText.innerHTML = ''; // Vider le contenu
+                
+                // Ajouter l'emoji si présent
+                if (customStatus.emoji) {
+                    if (customStatus.emoji.id) {
+                        // Emoji personnalisé
+                        const emojiImg = document.createElement('img');
+                        emojiImg.src = `https://cdn.discordapp.com/emojis/${customStatus.emoji.id}.${customStatus.emoji.animated ? 'gif' : 'png'}`;
+                        emojiImg.style.width = '18px';
+                        emojiImg.style.height = '18px';
+                        emojiImg.style.marginRight = '5px';
+                        emojiImg.style.verticalAlign = 'middle';
+                        statusText.appendChild(emojiImg);
+                    } else {
+                        // Emoji Unicode
+                        statusText.appendChild(document.createTextNode(customStatus.emoji.name + ' '));
+                    }
+                }
+                
+                // Ajouter le texte du statut
+                if (customStatus.state) {
+                    statusText.appendChild(document.createTextNode(customStatus.state));
+                }
+            } else {
+                // Pas de statut personnalisé, afficher le statut Discord
+                const statusMap = {
+                    'online': 'En ligne',
+                    'idle': 'Inactif',
+                    'dnd': 'Ne pas déranger',
+                    'offline': 'Hors ligne'
+                };
+                statusText.textContent = statusMap[presence.discord_status] || 'Hors ligne';
+            }
+            
+            // Afficher les activités (sauf le statut personnalisé)
+            const activities = presence.activities.filter(activity => activity.type !== 4);
+            const activityContainer = document.getElementById('activity-container');
+            
+            if (activities.length > 0) {
+                activityContainer.style.display = 'block';
+                activityContainer.innerHTML = '';
+                
+                activities.forEach(activity => {
+                    if (activity.name === 'Spotify') {
+                        // Activité Spotify
+                        const spotifyEl = document.createElement('div');
+                        spotifyEl.className = 'spotify-status';
+                        
+                        // Extraire l'URL de l'image Spotify
+                        let imageUrl = '';
+                        if (activity.assets && activity.assets.large_image) {
+                            imageUrl = activity.assets.large_image.replace('spotify:', 'https://i.scdn.co/image/');
+                        }
+                        
+                        spotifyEl.innerHTML = `
+                            <div class="spotify-cover" style="background-image: url('${imageUrl}')"></div>
+                            <div class="spotify-info">
+                                <div class="spotify-song">${activity.details || 'Titre inconnu'}</div>
+                                <div class="spotify-artist">${activity.state || 'Artiste inconnu'}</div>
+                            </div>
+                        `;
+                        activityContainer.appendChild(spotifyEl);
+                    } else {
+                        // Autre activité (jeu, etc.)
+                        const activityEl = document.createElement('div');
+                        activityEl.className = 'activity-details';
+                        
+                        // Calculer le temps écoulé
+                        let timestampText = '';
+                        if (activity.timestamps && activity.timestamps.start) {
+                            const elapsed = Math.floor((Date.now() - activity.timestamps.start) / 1000);
+                            const hours = Math.floor(elapsed / 3600);
+                            const minutes = Math.floor((elapsed % 3600) / 60);
+                            
+                            if (hours > 0) {
+                                timestampText = `Depuis ${hours}h ${minutes}min`;
+                            } else {
+                                timestampText = `Depuis ${minutes}min`;
+                            }
+                        }
+                        
+                        activityEl.innerHTML = `
+                            <div class="activity-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <div class="activity-text">
+                                <div class="activity-name">${activity.name}</div>
+                                <div class="activity-state">${activity.details || ''} ${activity.state ? '• ' + activity.state : ''}</div>
+                                ${timestampText ? `<div class="activity-timestamp">${timestampText}</div>` : ''}
+                            </div>
+                        `;
+                        activityContainer.appendChild(activityEl);
+                    }
+                });
+            } else {
+                activityContainer.style.display = 'none';
+            }
+        }
+
+        function loadTrack(index) {
+            const track = playlist[index];
+            document.getElementById('track-title').innerText = track.title;
+            document.getElementById('track-artist').innerText = track.artist;
+            document.getElementById('track-art').src = track.cover;
+            audio.src = track.src;
+        }
+
+        // Initial Load
+        loadTrack(trackIndex);
+        
+        // Configuration vidéo
+        bgVideo.loop = true;
+        bgVideo.muted = true;
+        bgVideo.playsInline = true;
+        
+        // Tentative de lecture automatique
+        bgVideo.play().catch(e => console.log("Autoplay prévenu:", e));
+
+        // Gestion de l'écran d'entrée
+        enterBtn.addEventListener('click', () => {
+            enterScreen.classList.add('hidden');
+            container.classList.add('visible');
+            
+            // Initialiser le statut Discord
+            fetchDiscordStatus(); // Appel immédiat
+            setInterval(fetchDiscordStatus, 15000); // Rafraîchir toutes les 15 secondes
+            
+            // Démarrer la musique
+            audio.play().catch(() => console.log("Audio en attente"));
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            
+            // Activer le son de la vidéo
+            bgVideo.muted = false;
+        });
+
+        // Contrôles audio
+        playBtn.addEventListener('click', () => {
+            if(audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        audio.addEventListener('timeupdate', (e) => {
+            const { duration, currentTime } = e.srcElement;
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+            }
+        });
+
+        progressArea.addEventListener('click', (e) => {
+            const width = progressArea.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if (duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        });
+
+        progressArea.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const width = progressArea.clientWidth;
+            const clickX = touch.clientX - progressArea.getBoundingClientRect().left;
+            const duration = audio.duration;
+            if (duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            trackIndex = (trackIndex + 1) % playlist.length;
+            loadTrack(trackIndex);
+            audio.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            trackIndex = (trackIndex - 1 + playlist.length) % playlist.length;
+            loadTrack(trackIndex);
+            audio.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+
+        audio.addEventListener('ended', () => {
+            trackIndex = (trackIndex + 1) % playlist.length;
+            loadTrack(trackIndex);
+            audio.play();
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                audio.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        // Empêcher le zoom
+        document.addEventListener('touchmove', (e) => {
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Effets tactiles
+        document.querySelectorAll('.social-item').forEach(item => {
+            let touchTimer;
+            
+            item.addEventListener('touchstart', function() {
+                touchTimer = setTimeout(() => {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 8px 20px rgba(255, 255, 255, 0.15)';
+                }, 50);
+            });
+            
+            item.addEventListener('touchend', function() {
+                clearTimeout(touchTimer);
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                }, 200);
+            });
+            
+            item.addEventListener('touchcancel', function() {
+                clearTimeout(touchTimer);
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>
